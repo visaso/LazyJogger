@@ -19,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         val tabs: TabLayout = findViewById(R.id.tabs)
         tabs.setupWithViewPager(viewPager)
 
+
         fab.setOnClickListener { view ->
             Snackbar.make(view, "Test with your own action", Snackbar.LENGTH_LONG)
                 .setAction("Action", null).show()
