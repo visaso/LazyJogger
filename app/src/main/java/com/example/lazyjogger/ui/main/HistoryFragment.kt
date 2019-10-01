@@ -6,9 +6,12 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.lazyjogger.R
+import kotlinx.android.synthetic.main.history_item.*
 
 
 /**
@@ -30,6 +33,7 @@ class HistoryFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_history, container, false)
         viewManager = LinearLayoutManager(activity)
         viewAdapter = HistoryListAdapter(list)
+
 
         recycler = view.findViewById<RecyclerView>(R.id.recyclerView).apply {
             setHasFixedSize(true)
