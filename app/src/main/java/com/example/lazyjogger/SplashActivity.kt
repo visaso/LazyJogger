@@ -18,7 +18,7 @@ class SplashActivity : AppCompatActivity() {
         Glide.with(this).load(R.raw.heart).into(kuva)
 
         Thread(Runnable {
-            sleep(2500)
+            sleep(500)
             val i = Intent(this, MainActivity::class.java)
             startActivity(i)
         }).start()

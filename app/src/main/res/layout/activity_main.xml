@@ -20,7 +20,7 @@
             android:layout_gravity="center"
             android:padding="@dimen/appbar_padding"
             android:text="@string/app_name"
-            android:rotation="-5"
+            android:rotation="-6"
             android:textAppearance="@style/TitleText" />
 
         <com.google.android.material.tabs.TabLayout
