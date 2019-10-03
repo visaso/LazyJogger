@@ -1,5 +1,6 @@
 package com.example.lazyjogger
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.vectordrawable.graphics.drawable.AnimatedVectorDrawableCompat
@@ -12,7 +13,7 @@ import java.lang.Thread.sleep
 class MainActivity : AppCompatActivity() {
 
     private var heartbeatAnim: AnimatedVectorDrawableCompat? = null
-    private var heartrate = 550
+    private var heartRate = 550
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +31,9 @@ class MainActivity : AppCompatActivity() {
         val t = Thread(runnable)
         t.start()
 
-        fab.setOnClickListener { view ->
+        fab.setOnClickListener {
+            val intent = Intent(this, SensorActivity::class.java)
+            startActivity(intent)
         }
 
     }
@@ -38,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         override fun run() {
             for (i in 1..500) {
                 heartbeatAnim?.start()
-                sleep(heartrate.toLong())
+                sleep(heartRate.toLong())
             }
         }
     }

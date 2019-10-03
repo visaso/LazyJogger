@@ -5,5 +5,10 @@
     <string name="tab_text_3">History</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unknown">Unknown</string>
+    <string name="splashScreenDesc">Splash Screen</string>
+    <string name="history_image">History image</string>
+    <string name="BTName">Name</string>
+    <string name="BTMac">Mac</string>
+    <string name="BTStrength">Strength</string>
 </resources>
