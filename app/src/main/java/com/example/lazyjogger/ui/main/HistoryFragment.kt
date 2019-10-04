@@ -31,7 +31,6 @@ class HistoryFragment : Fragment() {
         viewManager = LinearLayoutManager(activity)
         viewAdapter = HistoryListAdapter(list)
 
-
         recycler = view.findViewById<RecyclerView>(R.id.recyclerView).apply {
             setHasFixedSize(true)
             layoutManager = viewManager
