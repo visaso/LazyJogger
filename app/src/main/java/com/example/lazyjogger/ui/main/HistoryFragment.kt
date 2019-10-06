@@ -6,9 +6,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lazyjogger.R
+import com.example.lazyjogger.database.UserModel
 
 
 /**
@@ -16,8 +19,8 @@ import com.example.lazyjogger.R
  */
 class HistoryFragment : Fragment() {
 
-    private lateinit var recycler: RecyclerView
-    private lateinit var viewAdapter: RecyclerView.Adapter<*>
+    private lateinit var recyclerView: RecyclerView
+    private lateinit var viewAdapter: HistoryListAdapter
     private lateinit var viewManager: RecyclerView.LayoutManager
 
 
@@ -25,9 +28,8 @@ class HistoryFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val list = Runs.runs
-        val view = inflater.inflate(R.layout.fragment_history, container, false)
+        // val list = Runs.runs
+        /*
         viewManager = LinearLayoutManager(activity)
         viewAdapter = HistoryListAdapter(list)
 
@@ -36,20 +38,26 @@ class HistoryFragment : Fragment() {
             layoutManager = viewManager
             adapter = viewAdapter
         }
-        return view
+
+         */
+        return inflater.inflate(R.layout.fragment_history, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        recyclerView = view!!.findViewById(R.id.recyclerView)
+
+        val ump = ViewModelProviders.of(this).get(UserModel::class.java)
+        ump.getUsers().observe(this, Observer {
+            viewAdapter = HistoryListAdapter(it)
+            recyclerView.layoutManager = LinearLayoutManager(context)
+            recyclerView.adapter = viewAdapter
+
+        })
     }
 
     companion object {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
         private const val ARG_SECTION_NUMBER = "section_number"
-
-        /**
-         * Returns a new instance of this fragment for the given section
-         * number.
-         */
         @JvmStatic
         fun newInstance(sectionNumber: Int): HistoryFragment {
             return HistoryFragment().apply {

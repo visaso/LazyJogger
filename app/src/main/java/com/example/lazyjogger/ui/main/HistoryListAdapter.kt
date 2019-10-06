@@ -7,9 +7,10 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.example.lazyjogger.R
+import com.example.lazyjogger.database.User
 import kotlinx.android.synthetic.main.history_item.view.*
 
-class HistoryListAdapter(private val runList: List<Run>): RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
+class HistoryListAdapter(private val runList: List<User>): RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
 
     class ViewHolder(val textView: View): RecyclerView.ViewHolder(textView)
 
@@ -23,7 +24,7 @@ class HistoryListAdapter(private val runList: List<Run>): RecyclerView.Adapter<H
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.textView.textView.text = runList[position].name
+        holder.textView.textView.text = runList[position].firstName
     }
 
 }
