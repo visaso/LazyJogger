@@ -23,4 +23,13 @@
     <string name="_9_hours">9 hours</string>
     <string name="temperature">Temperature</string>
     <string name="humidity">Humidity</string>
+    <string name="time">%1$s</string>
+    <string name="distance">%1$s km</string>
+    <string name="distanceTitle">Distance</string>
+    <string name="speed">Speed</string>
+    <string name="bmp">%1$s bmp</string>
+    <string name="speedText">%1$s km/h</string>
+    <string name="heart_rate">Heart rate</string>
+    <string name="timeTitle">Time</string>
+    <string name="heartbeattext">%1$s</string>
 </resources>
