@@ -2,7 +2,7 @@ package com.example.lazyjogger.database
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import androidx.room.TypeConverters
+import org.osmdroid.util.GeoPoint
 
 @Entity
 data class User(
@@ -13,7 +13,7 @@ data class User(
     val distance: Double,
     val date: String,
     val steps: Int,
-    val geoPoints: String
+    val geoPoints: List<GeoPoint>
 
 ) {
 

@@ -43,11 +43,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-        if (event?.sensor == sStepCounter) {
-            stepCounter++
-            stepCounterText.text = getString(R.string.stepcounter, stepCounter.toString())
-            Log.d("Stepthingy", event?.values?.get(0).toString())
-        }
+//        if (event?.sensor == sStepCounter) {
+//            stepCounter++
+//            stepCounterText.text = getString(R.string.stepcounter, stepCounter.toString())
+//            Log.d("Stepthingy", event?.values?.get(0).toString())
+//        }
     }
 
     private lateinit var mCompassOverlay: CompassOverlay
@@ -67,10 +67,12 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     private var distanceTraveled: Double = 0.0
 
     private lateinit var sm: SensorManager
-    private var sStepCounter: Sensor? = null
+    //private var sStepCounter: Sensor? = null
     private var stepCounter = 0
 
     private var date = Calendar.getInstance().time
+
+    private var geoPointList: MutableList<GeoPoint> = mutableListOf()
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -78,7 +80,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         setContentView(R.layout.activity_run)
 
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        sStepCounter = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
+        //sStepCounter = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         Configuration.getInstance().load(
             this,
             PreferenceManager.getDefaultSharedPreferences(this)
@@ -87,8 +89,10 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnCompleteListener { task ->
             if (task.isSuccessful && task.result != null && !this::previousLocation.isInitialized) {
-                previousLocation = GeoPoint(task.result!!.latitude, task.result!!.longitude)
+                val geoPoint = GeoPoint(task.result!!.latitude, task.result!!.longitude)
+                previousLocation = geoPoint
                 previousTime = System.currentTimeMillis()
+                geoPointList.add(geoPoint)
             }
         }
         orientationProvider = InternalCompassOrientationProvider(this)
@@ -99,6 +103,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
             doAsync {
                 val dateFormatter = SimpleDateFormat("EEE, dd.MM.yyyy, kk:mm", Locale.getDefault())
                 val date = dateFormatter.format(date)
+                val geoPointList = geoPointList.toList()
                 val id = db.userDao().insert(
                     User(
                         0,
@@ -107,7 +112,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                         distanceTraveled,
                         date,
                         stepCounter,
-                        "123123"
+                        geoPointList
                     )
                 )
 
@@ -135,6 +140,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                     addPoint(loc, time, speed)
                     previousLocation = loc
                     previousTime = System.currentTimeMillis()
+                    geoPointList.add(loc)
                 }
             }
         }
@@ -164,9 +170,9 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun setupSensors() {
-        sStepCounter?.also {
-            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
-        }
+//        sStepCounter?.also {
+//            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+//        }
     }
 
 

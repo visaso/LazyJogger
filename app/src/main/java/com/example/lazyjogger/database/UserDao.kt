@@ -9,6 +9,9 @@ interface UserDao {
     @Query("SELECT * FROM user")
     fun getAll(): LiveData<List<User>>
 
+    @Query("SELECT * FROM user WHERE uid = :uid")
+    fun getItem(uid: Long): User
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(user: User): Long
 
