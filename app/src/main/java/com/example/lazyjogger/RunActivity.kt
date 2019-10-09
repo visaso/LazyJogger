@@ -1,37 +1,59 @@
 package com.example.lazyjogger
 
+import android.content.Context
 import android.graphics.Color
+import android.hardware.Sensor
+import android.hardware.SensorEvent
+import android.hardware.SensorEventListener
+import android.hardware.SensorManager
 import android.os.Bundle
 import android.os.Looper
-import android.os.SystemClock
 import android.preference.PreferenceManager
 import android.util.Log
-import android.widget.Chronometer
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.example.lazyjogger.database.User
+import com.example.lazyjogger.database.UserDB
 import com.google.android.gms.location.*
 import kotlinx.android.synthetic.main.activity_run.*
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.compass.CompassOverlay
+import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.math.roundToInt
-import kotlin.math.roundToLong
 import kotlin.random.Random
 
-class RunActivity : AppCompatActivity() {
+class RunActivity : AppCompatActivity(), SensorEventListener {
 
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
+        Log.d("Stepsensor accuracy", accuracy.toString())
+    }
+
+    override fun onSensorChanged(event: SensorEvent?) {
+        if (event?.sensor == sStepCounter) {
+            stepCounter++
+            stepCounterText.text = getString(R.string.stepcounter, stepCounter.toString())
+            Log.d("Stepthingy", event?.values?.get(0).toString())
+        }
+    }
+
+    private lateinit var mCompassOverlay: CompassOverlay
     private lateinit var mapRunning: MapView
     private lateinit var polyline: Polyline
+    private var startingOrientation = 0.0.toFloat()
 
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
@@ -40,16 +62,28 @@ class RunActivity : AppCompatActivity() {
     private var previousTime: Long = 0
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private lateinit var orientationProvider: InternalCompassOrientationProvider
 
     private var distanceTraveled: Double = 0.0
+
+    private lateinit var sm: SensorManager
+    private var sStepCounter: Sensor? = null
+    private var stepCounter = 0
+
+    private var date = Calendar.getInstance().time
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_run)
+
+        sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
+        sStepCounter = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         Configuration.getInstance().load(
             this,
             PreferenceManager.getDefaultSharedPreferences(this)
         )
+        setupSensors()
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnCompleteListener { task ->
             if (task.isSuccessful && task.result != null && !this::previousLocation.isInitialized) {
@@ -57,6 +91,33 @@ class RunActivity : AppCompatActivity() {
                 previousTime = System.currentTimeMillis()
             }
         }
+        orientationProvider = InternalCompassOrientationProvider(this)
+
+        val db = UserDB.get(this)
+        val endRun = findViewById<ImageButton>(R.id.endRun)
+        endRun.setOnClickListener {
+            doAsync {
+                val dateFormatter = SimpleDateFormat("EEE, dd.MM.yyyy, kk:mm", Locale.getDefault())
+                val date = dateFormatter.format(date)
+                val id = db.userDao().insert(
+                    User(
+                        0,
+                        "Testi",
+                        "Juttu",
+                        distanceTraveled,
+                        date,
+                        stepCounter,
+                        "123123"
+                    )
+                )
+
+                uiThread {
+                    Toast.makeText(applicationContext, "$id added", Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+
 
         locationRequest = LocationRequest().apply {
             interval = 1500
@@ -68,9 +129,10 @@ class RunActivity : AppCompatActivity() {
                 for (location in locationResult.locations) {
                     val loc = GeoPoint(location.latitude, location.longitude)
                     val time = System.currentTimeMillis()
+                    val speed = location.speed
                     //Toast.makeText(applicationContext, "${location.latitude}", Toast.LENGTH_SHORT)
                     //    .show()
-                    addPoint(loc, time)
+                    addPoint(loc, time, speed)
                     previousLocation = loc
                     previousTime = System.currentTimeMillis()
                 }
@@ -82,6 +144,7 @@ class RunActivity : AppCompatActivity() {
         distanceText.text = getString(R.string.distance, "13.3 km")
         speedText.text = getString(R.string.speedText, "6.2")
         heartbeatText.text = getString(R.string.heartbeattext, "120 bpm")
+        stepCounterText.text = stepCounter.toString()
 
         timer.start()
         timer.format = "00:%s"
@@ -100,6 +163,13 @@ class RunActivity : AppCompatActivity() {
         super.onBackPressed()
     }
 
+    private fun setupSensors() {
+        sStepCounter?.also {
+            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+        }
+    }
+
+
     private fun startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(
             locationRequest,
@@ -112,14 +182,30 @@ class RunActivity : AppCompatActivity() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
     }
 
+    override fun onPause() {
+        super.onPause()
+        stopLocationUpdates()
+        sm.unregisterListener(this)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        startLocationUpdates()
+    }
+
 
     private fun setupMap(map: MapView) {
+
         val mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), map).apply {
             enableMyLocation()
         }
+        mCompassOverlay = CompassOverlay(this, map).apply {
+            enableCompass()
+            isPointerMode = true
+        }
         polyline = Polyline(map)
         map.apply {
-            setTileSource(TileSourceFactory.MAPNIK)
+            setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
             //clipToOutline = true
             setMultiTouchControls(true)
             // setMultiTouchControls(false)
@@ -128,10 +214,13 @@ class RunActivity : AppCompatActivity() {
             //controller.setCenter(GeoPoint(60.17, 25.95))
             overlays.add(mLocationOverlay)
             overlays.add(polyline)
+            overlays.add(mCompassOverlay)
+            mapOrientation = startingOrientation
         }
+
     }
 
-    private fun addPoint(geoPoint: GeoPoint, currentTime: Long) {
+    private fun addPoint(geoPoint: GeoPoint, currentTime: Long, speed: Float) {
         val r = Random
         val lol = r.nextInt(10)
         val newLine = Polyline()
@@ -149,26 +238,29 @@ class RunActivity : AppCompatActivity() {
             else -> newLine.color = Color.parseColor(calculateColor(0.8.toFloat()))
         }
         val distanceDelta = previousLocation.distanceToAsDouble(geoPoint)
+        val bearing = previousLocation.bearingTo(geoPoint)
         distanceTraveled += distanceDelta
 
-
-        val elapsedTime = (currentTime - previousTime) / 1000
-        val velocityAsKmh = (distanceDelta/elapsedTime) * 3.6
-        val formatVelocity = String.format("%.2f", velocityAsKmh)
-        Log.d("ELAPSED TIME", elapsedTime.toString())
-        Log.d("Current speed", formatVelocity)
+        val formatVelocity = String.format("%.1f", speed * 3.6)
+        //Log.d("ELAPSED TIME", elapsedTime.toString())
+        //Log.d("Current speed", formatVelocity)
 
         val distanceToKm = distanceTraveled / 1000
         val formatDistance = String.format("%.2f", distanceToKm)
-        Log.d("Distance traveled", distanceToKm.toString())
+        //Log.d("Distance traveled", distanceToKm.toString())
 
         distanceText.text = getString(R.string.distance, formatDistance)
         speedText.text = getString(R.string.speedText, formatVelocity)
 
+        if (distanceDelta > 1) {
+            mapRunning.mapOrientation = bearing.toFloat()
+        }
+        Log.d("Map", mapRunning.mapOrientation.toString())
+
+        Log.d("Compass", mCompassOverlay.orientation.toString())
         newLine.addPoint(previousLocation)
         newLine.addPoint(geoPoint)
         mapRunning.controller.setCenter(geoPoint)
-        //map.overlays.add(polyline)
         mapRunning.overlays.add(newLine)
         mapRunning.invalidate()
     }
@@ -182,10 +274,6 @@ class RunActivity : AppCompatActivity() {
         val hexRed = Integer.toHexString(red)
         val hexGreen = Integer.toHexString(green)
         val hexBlue = Integer.toHexString(blue)
-        Log.d("RED", hexRed.toString())
-        Log.d("GREEN", hexGreen.toString())
-        Log.d("BLUE", hexBlue.toString())
-        Log.d("COLOR", "#$hexRed$hexGreen$hexBlue")
         return "#$hexRed$hexGreen$hexBlue"
 
     }

@@ -84,7 +84,7 @@ class RunMenuFragment : Fragment(), LocationListener {
                 locationResult ?: return
                 for (location in locationResult.locations){
                     val loc = GeoPoint(location.latitude, location.longitude)
-                    Toast.makeText(context, "${location.latitude}", Toast.LENGTH_SHORT).show()
+                    //Toast.makeText(context, "${location.latitude}", Toast.LENGTH_SHORT).show()
                     map.controller.setCenter(GeoPoint(location.latitude, location.longitude))
                     previousLocation = loc
                 }

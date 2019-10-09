@@ -21,25 +21,12 @@ class HistoryFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
     private lateinit var viewAdapter: HistoryListAdapter
-    private lateinit var viewManager: RecyclerView.LayoutManager
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // val list = Runs.runs
-        /*
-        viewManager = LinearLayoutManager(activity)
-        viewAdapter = HistoryListAdapter(list)
-
-        recycler = view.findViewById<RecyclerView>(R.id.recyclerView).apply {
-            setHasFixedSize(true)
-            layoutManager = viewManager
-            adapter = viewAdapter
-        }
-
-         */
         return inflater.inflate(R.layout.fragment_history, container, false)
     }
 
@@ -49,7 +36,7 @@ class HistoryFragment : Fragment() {
 
         val ump = ViewModelProviders.of(this).get(UserModel::class.java)
         ump.getUsers().observe(this, Observer {
-            viewAdapter = HistoryListAdapter(it)
+            viewAdapter = HistoryListAdapter(context!! ,it)
             recyclerView.layoutManager = LinearLayoutManager(context)
             recyclerView.adapter = viewAdapter
 
@@ -67,22 +54,6 @@ class HistoryFragment : Fragment() {
             }
         }
     }
-
-
 }
 
-data class Run (val name: String, val startYear: Int, val endYear: Int, val desc: String)
-
-internal object Runs {
-
-    val runs = listOf(
-        Run("Myyrmäkirundi", 1919, 1925, "Eka presidentti"),
-        Run("Martsari", 1925, 1931, "Toka presidentti"),
-        Run("Pitäjänmäki", 1931, 1937, "Kolmas presidentti"),
-        Run("Olari", 1937, 1940, "Neljas presidentti"),
-        Run("Varisto", 1940, 1944, "Viides presidentti"),
-        Run("Lammaslampi", 1944, 1946, "Kuudes presidentti"),
-        Run("Mesta", 1946, 1956, "Äkäinen ukko")
-    )
-}
 

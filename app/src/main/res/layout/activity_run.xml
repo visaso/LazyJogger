@@ -16,6 +16,14 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintLeft_toLeftOf="parent" />
 
+    <ImageButton
+        android:id="@+id/endRun"
+        android:layout_width="42dp"
+        android:layout_height="42dp"
+        android:src="@drawable/person"
+        android:background="@android:color/transparent"
+        android:layout_gravity="end|top"/>
+
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -104,7 +112,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/speedText"
                     android:textSize="26sp"
-                    tools:text="6:20 km/h"/>
+                    tools:text="6.2 km/h"/>
             </LinearLayout>
 
             <LinearLayout
@@ -124,7 +132,26 @@
                     android:layout_height="wrap_content"
                     android:text="@string/heartbeattext"
                     android:textSize="26sp"
-                    tools:text="6:20 km/h"/>
+                    tools:text="120 bpm"/>
+            </LinearLayout>
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+                <TextView
+                    android:id="@+id/stepCounterTitle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/steps"
+                    android:textSize="16sp" />
+                <TextView
+                    android:id="@+id/stepCounterText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/stepcounter"
+                    android:textSize="26sp"
+                    tools:text="15 steps"/>
             </LinearLayout>
         </LinearLayout>
 

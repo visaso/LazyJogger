@@ -32,4 +32,8 @@
     <string name="heart_rate">Heart rate</string>
     <string name="timeTitle">Time</string>
     <string name="heartbeattext">%1$s</string>
+    <string name="steps">Steps</string>
+    <string name="stepcounter">%1$s</string>
+    <string name="metersCardView">%1$s meters!</string>
+    <string name="dateCardView">%1$s</string>
 </resources>
