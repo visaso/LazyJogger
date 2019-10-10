@@ -7,113 +7,141 @@
     tools:context=".RunActivity">
 
 
-
     <org.osmdroid.views.MapView
         android:id="@+id/mapRunning"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent" />
+        app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
-        android:id="@+id/endRun"
-        android:layout_width="42dp"
-        android:layout_height="42dp"
-        android:layout_margin="12dp"
-        android:src="@drawable/ic_flag_black_36dp"
-        android:background="@android:color/transparent"
-        android:layout_gravity="end|top"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/sensorRecycler"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="end"
+        android:orientation="horizontal">
+
+        <ImageButton
+            android:id="@+id/startScan"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_search_black_36dp" />
+
+        <ImageButton
+            android:id="@+id/endRun"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
+            android:layout_gravity="end|top"
+            android:layout_margin="12dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_flag_black_36dp" />
+
+
+    </LinearLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="250dp"
-        android:orientation="horizontal"
         android:layout_gravity="bottom"
-        android:background="@drawable/run_view_menu">
-
+        android:background="@drawable/run_view_menu"
+        android:orientation="horizontal">
 
 
         <LinearLayout
             android:id="@+id/timeLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:orientation="vertical"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintBottom_toTopOf="@id/distanceLayout"
             android:paddingTop="6dp"
-            android:layout_marginStart="12dp">
+            app:layout_constraintBottom_toTopOf="@id/distanceLayout"
+            app:layout_constraintLeft_toLeftOf="parent">
+
             <TextView
                 android:id="@+id/timeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/timeTitle"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="Time"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                tools:text="Time" />
 
             <Chronometer
                 android:id="@+id/timer"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textStyle="bold"
-                android:textSize="44sp"/>
+                android:textSize="44sp"
+                android:textStyle="bold" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/distanceLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
             android:orientation="vertical"
-            app:layout_constraintTop_toBottomOf="@id/timeLayout"
-            app:layout_constraintLeft_toLeftOf="parent"
             android:paddingTop="6dp"
-            android:layout_marginStart="12dp">
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/timeLayout">
+
             <TextView
                 android:id="@+id/currentDistance"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/distanceTitle"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                tools:text="Distance"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                tools:text="Distance" />
+
             <TextView
                 android:id="@+id/distanceText"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:text="@string/distance"
                 android:textSize="44sp"
                 android:textStyle="bold"
-                tools:text="13.3 km"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                tools:text="13.3 km" />
         </LinearLayout>
 
         <LinearLayout
             android:id="@+id/infoLayout"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            app:layout_constraintTop_toBottomOf="@id/distanceLayout"
+            android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
-            android:layout_height="wrap_content">
+            android:orientation="horizontal"
+            app:layout_constraintTop_toBottomOf="@id/distanceLayout">
 
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/speedTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/speed"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/speedText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/speedText"
                     android:textSize="26sp"
-                    tools:text="6.2 km/h"/>
+                    tools:text="6.2 km/h" />
             </LinearLayout>
 
             <LinearLayout
@@ -121,38 +149,43 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/heartbeatTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/heart_rate"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/heartbeatText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/heartbeattext"
                     android:textSize="26sp"
-                    tools:text="120 bpm"/>
+                    tools:text="120 bpm" />
             </LinearLayout>
+
             <LinearLayout
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:orientation="vertical">
+
                 <TextView
                     android:id="@+id/stepCounterTitle"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/steps"
                     android:textSize="16sp" />
+
                 <TextView
                     android:id="@+id/stepCounterText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/stepcounter"
                     android:textSize="26sp"
-                    tools:text="15 steps"/>
+                    tools:text="15 steps" />
             </LinearLayout>
         </LinearLayout>
 

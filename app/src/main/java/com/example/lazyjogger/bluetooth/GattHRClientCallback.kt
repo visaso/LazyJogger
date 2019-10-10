@@ -74,7 +74,7 @@ class GattHRClientCallback(private val hrCallback: HRCallback) : BluetoothGattCa
         descriptor: BluetoothGattDescriptor,
         status: Int
     ) {
-        Log.d("DBG", "onDescriptorWrite")
+        //Log.d("DBG", "onDescriptorWrite")
     }
 
     override fun onCharacteristicChanged(
@@ -83,9 +83,9 @@ class GattHRClientCallback(private val hrCallback: HRCallback) : BluetoothGattCa
     ) {
         val char = characteristic.value
         if (char != null) {
-            Log.d("DBG", characteristic.value.size.toString())
+            //Log.d("DBG", characteristic.value.size.toString())
             char.forEach {
-                Log.d("Test", it.toInt().toString())
+                //Log.d("Test", it.toInt().toString())
             }
             if ((char[0] and 1).toInt() != 0) {
                 hrCallback.sendData(characteristic.getIntValue(FORMAT_UINT16, 1))

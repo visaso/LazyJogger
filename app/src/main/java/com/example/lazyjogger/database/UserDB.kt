@@ -48,4 +48,21 @@ class TypeConverter {
         }.type
         return gson.fromJson(geoPoints, collectionType)
     }
+
+    @androidx.room.TypeConverter
+    fun fromHRList(hrList: List<Int>): String {
+        val gson = Gson()
+        val type = object : TypeToken<List<Int>>() {
+        }.type
+        return gson.toJson(hrList, type)
+    }
+
+    @androidx.room.TypeConverter
+    fun toHRList(hrList: String): List<Int> {
+        val gson = Gson()
+        val collectionType = object : TypeToken<List<Int>>() {
+        }.type
+        return gson.fromJson(hrList, collectionType)
+    }
 }
+

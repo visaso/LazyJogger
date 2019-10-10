@@ -2,12 +2,15 @@ package com.example.lazyjogger.ui.main
 
 
 import android.content.Context
+import android.graphics.Color
 import android.transition.TransitionManager
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.example.lazyjogger.ColorUtils.ColorCalculator
 import com.example.lazyjogger.R
 import com.example.lazyjogger.database.User
 import com.example.lazyjogger.database.UserDB
@@ -23,6 +26,11 @@ class HistoryListAdapter(private val context: Context, private val runList: List
     RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
 
     class ViewHolder(val cardView: View) : RecyclerView.ViewHolder(cardView)
+
+    companion object {
+        const val greenHeartBeat = 60
+        const val redHeartBeat = 180
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val textView = LayoutInflater.from(parent.context).inflate(
@@ -46,33 +54,45 @@ class HistoryListAdapter(private val context: Context, private val runList: List
         doAsync {
             val run = db.userDao().getItem((position + 1).toLong())
             val geoPoints = run.geoPoints
-            val polyline = Polyline(map).apply {
-                setPoints(geoPoints)
-            }
+
             map.apply {
                 uiThread {
                     setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-                    //clipToOutline = true
                     setMultiTouchControls(true)
-                    // setMultiTouchControls(false)
                     zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
                     controller.setZoom(16.0)
-                    //controller.setCenter(GeoPoint(60.17, 25.95))
                     controller.setCenter(checkCameraZoom(geoPoints))
-                    overlays.add(polyline)
                 }
 
             }
-            //val i = Intent(context, DetailActivity::class.java)
-            //i.putExtra("item", (position + 1).toLong())
-            //context.startActivity(i)
+            val cc = ColorCalculator()
+            for (i in geoPoints.indices) {
+                if (i == 0) {
+                    Log.d("Skip this one", "Skip")
+                } else {
+                    val newLine = Polyline()
+                    newLine.color =
+                        Color.parseColor(cc.calculateColor((item.hrList[i] - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat()))
+                    newLine.addPoint(item.geoPoints[i - 1])
+                    newLine.addPoint(item.geoPoints[i])
+                    map.overlays.add(newLine)
+                    map.invalidate()
+                }
+            }
         }
 
         holder.cardView.date.text = context.getString(R.string.dateCardView, item.date)
         holder.cardView.distance.text =
             context.getString(R.string.metersCardView, String.format("%.0f", item.distance))
-        //holder.cardView.testText.text = item.geoPoints[1].latitude.toString()
         holder.cardView.timeText.text = context.getString(R.string.timecardview, item.timeSpent)
+
+        var hrSum = 0
+        for (i in item.hrList) {
+            hrSum += i
+        }
+        val avg = hrSum / item.hrList.size
+
+        holder.cardView.avgHeartrate.text = context.getString(R.string.average_bpm, avg.toString())
 
         holder.cardView.setOnClickListener {
             if (open) {

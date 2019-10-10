@@ -72,18 +72,12 @@
                         android:text="@string/metersCardView"
                         android:textSize="18sp" />
                     <TextView
-                        android:id="@+id/minHeartrate"
+                        android:id="@+id/avgHeartrate"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="79 bpm"
+                        android:text="@string/average_bpm"
                         android:textSize="18sp" />
-                    <TextView
-                        android:id="@+id/maxHeartrate"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="180 bpm"
-                        tools:text="180 bpm"
-                        android:textSize="18sp" />
+
                 </LinearLayout>
 
             </LinearLayout>
