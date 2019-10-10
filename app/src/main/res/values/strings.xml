@@ -34,7 +34,7 @@
     <string name="heartbeattext">%1$s</string>
     <string name="steps">Steps</string>
     <string name="stepcounter">%1$s</string>
-    <string name="metersCardView">%1$s meters!</string>
+    <string name="metersCardView">Distance: %1$s meters!</string>
     <string name="dateCardView">%1$s</string>
-    <string name="timecardview">%1$s</string>
+    <string name="timecardview">Time: %1$s</string>
 </resources>

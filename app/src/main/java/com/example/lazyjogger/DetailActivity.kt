@@ -14,7 +14,7 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Polyline
-
+/*
 class DetailActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,3 +61,4 @@ class DetailActivity : AppCompatActivity() {
         return GeoPoint.fromCenterBetween(startingPoint, furthestPoint)
     }
 }
+*/

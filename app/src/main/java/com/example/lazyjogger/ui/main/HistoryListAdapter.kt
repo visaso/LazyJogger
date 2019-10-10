@@ -72,7 +72,7 @@ class HistoryListAdapter(private val context: Context, private val runList: List
         holder.cardView.distance.text =
             context.getString(R.string.metersCardView, String.format("%.0f", item.distance))
         //holder.cardView.testText.text = item.geoPoints[1].latitude.toString()
-        holder.cardView.timeText.text = item.timeSpent
+        holder.cardView.timeText.text = context.getString(R.string.timecardview, item.timeSpent)
 
         holder.cardView.setOnClickListener {
             if (open) {

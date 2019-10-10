@@ -50,11 +50,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
-//        if (event?.sensor == sStepCounter) {
-//            stepCounter++
-//            stepCounterText.text = getString(R.string.stepcounter, stepCounter.toString())
-//            Log.d("Stepthingy", event?.values?.get(0).toString())
-//        }
+        if (event?.sensor == sStepCounter) {
+            stepCounter++
+            stepCounterText.text = getString(R.string.stepcounter, stepCounter.toString())
+            Log.d("Stepthingy", event?.values?.get(0).toString())
+        }
     }
 
     private var currentHeartRate = 0
@@ -76,7 +76,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     private var distanceTraveled: Double = 0.0
 
     private lateinit var sm: SensorManager
-    //private var sStepCounter: Sensor? = null
+    private var sStepCounter: Sensor? = null
     private var stepCounter = 0
 
     private var date = Calendar.getInstance().time
@@ -89,7 +89,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         setContentView(R.layout.activity_run)
 
         sm = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-        //sStepCounter = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
+        sStepCounter = sm.getDefaultSensor(Sensor.TYPE_STEP_DETECTOR)
         Configuration.getInstance().load(
             this,
             PreferenceManager.getDefaultSharedPreferences(this)
@@ -184,9 +184,9 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     }
 
     private fun setupSensors() {
-//        sStepCounter?.also {
-//            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
-//        }
+        sStepCounter?.also {
+            sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
+        }
     }
 
 
