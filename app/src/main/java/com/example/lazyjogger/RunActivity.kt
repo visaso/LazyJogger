@@ -1,6 +1,7 @@
 package com.example.lazyjogger
 
 import android.content.Context
+import android.content.Intent
 import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
@@ -16,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
+import com.example.lazyjogger.bluetooth.GattHRClientCallback
 import com.example.lazyjogger.database.User
 import com.example.lazyjogger.database.UserDB
 import com.google.android.gms.location.*
@@ -36,10 +38,15 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.random.Random
 
-class RunActivity : AppCompatActivity(), SensorEventListener {
+class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallback.HRCallback {
+
+    override fun sendData(heartRate: Int) {
+        Log.d("Heartrate", heartRate.toString())
+        currentHeartRate = heartRate
+    }
 
     override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        Log.d("Stepsensor accuracy", accuracy.toString())
+        //Log.d("Stepsensor accuracy", accuracy.toString())
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
@@ -49,6 +56,8 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
 //            Log.d("Stepthingy", event?.values?.get(0).toString())
 //        }
     }
+
+    private var currentHeartRate = 0
 
     private lateinit var mCompassOverlay: CompassOverlay
     private lateinit var mapRunning: MapView
@@ -101,7 +110,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         val endRun = findViewById<ImageButton>(R.id.endRun)
         endRun.setOnClickListener {
             doAsync {
-                val dateFormatter = SimpleDateFormat("EEE, dd.MM.yyyy, kk:mm", Locale.getDefault())
+                val dateFormatter = SimpleDateFormat("dd.MM.yyyy, kk:mm", Locale.getDefault())
                 val date = dateFormatter.format(date)
                 val geoPointList = geoPointList.toList()
                 val id = db.userDao().insert(
@@ -112,14 +121,17 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                         distanceTraveled,
                         date,
                         stepCounter,
-                        geoPointList
+                        geoPointList,
+                        timer.text.toString()
                     )
                 )
 
                 uiThread {
-                    Toast.makeText(applicationContext, "$id added", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(applicationContext, "Run finished!", Toast.LENGTH_SHORT).show()
                 }
             }
+            val i = Intent(this, MainActivity::class.java)
+            startActivity(i)
         }
 
 
@@ -133,11 +145,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     val loc = GeoPoint(location.latitude, location.longitude)
-                    val time = System.currentTimeMillis()
+                    //val time = System.currentTimeMillis()
                     val speed = location.speed
                     //Toast.makeText(applicationContext, "${location.latitude}", Toast.LENGTH_SHORT)
                     //    .show()
-                    addPoint(loc, time, speed)
+                    addPoint(loc, speed)
                     previousLocation = loc
                     previousTime = System.currentTimeMillis()
                     geoPointList.add(loc)
@@ -157,6 +169,8 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         timer.setOnChronometerTickListener { timer ->
             timer.format = "00:%s"
         }
+
+        Log.d("Time passed", timer.text.toString())
 
 
 
@@ -226,7 +240,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
 
     }
 
-    private fun addPoint(geoPoint: GeoPoint, currentTime: Long, speed: Float) {
+    private fun addPoint(geoPoint: GeoPoint, speed: Float) {
         val r = Random
         val lol = r.nextInt(10)
         val newLine = Polyline()
@@ -259,11 +273,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener {
         speedText.text = getString(R.string.speedText, formatVelocity)
 
         if (distanceDelta > 1) {
-            mapRunning.mapOrientation = bearing.toFloat()
+            //mapRunning.mapOrientation = bearing.toFloat()
         }
-        Log.d("Map", mapRunning.mapOrientation.toString())
+        //Log.d("Map", mapRunning.mapOrientation.toString())
 
-        Log.d("Compass", mCompassOverlay.orientation.toString())
+        //Log.d("Compass", mCompassOverlay.orientation.toString())
         newLine.addPoint(previousLocation)
         newLine.addPoint(geoPoint)
         mapRunning.controller.setCenter(geoPoint)

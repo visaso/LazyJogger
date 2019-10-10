@@ -3,6 +3,8 @@ package com.example.lazyjogger.ui.main
 
 import android.content.Context
 import android.content.Intent
+import android.transition.TransitionManager
+import android.transition.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,14 +13,28 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.lazyjogger.DetailActivity
 import com.example.lazyjogger.R
 import com.example.lazyjogger.database.User
+import com.example.lazyjogger.database.UserDB
+import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.history_item.view.*
+import kotlinx.android.synthetic.main.history_item.view.map
+import org.jetbrains.anko.doAsync
+import org.jetbrains.anko.uiThread
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.CustomZoomButtonsController
+import org.osmdroid.views.overlay.Polyline
 
-class HistoryListAdapter(private val context: Context, private val runList: List<User>): RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
+class HistoryListAdapter(private val context: Context, private val runList: List<User>) :
+    RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
 
-    class ViewHolder(val cardView: View): RecyclerView.ViewHolder(cardView)
+    class ViewHolder(val cardView: View) : RecyclerView.ViewHolder(cardView)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val textView = LayoutInflater.from(parent.context).inflate(R.layout.history_item, parent, false) as LinearLayout
+        val textView = LayoutInflater.from(parent.context).inflate(
+            R.layout.history_item,
+            parent,
+            false
+        ) as LinearLayout
         return ViewHolder(textView)
     }
 
@@ -27,16 +43,66 @@ class HistoryListAdapter(private val context: Context, private val runList: List
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        holder.cardView.date.text = context.getString(R.string.dateCardView, runList[position].date)
-        holder.cardView.distance.text = context.getString(R.string.metersCardView, String.format("%.0f", runList[position].distance))
-        holder.cardView.testText.text = runList[position].geoPoints[1].latitude.toString()
+        val item = runList[position]
+        val db = UserDB.get(context)
+        val map = holder.cardView.map
+        var open = false
+
+        doAsync {
+            val run = db.userDao().getItem((position + 1).toLong())
+            val geoPoints = run.geoPoints
+            val polyline = Polyline(map).apply {
+                setPoints(geoPoints)
+            }
+            map.apply {
+                uiThread {
+                    setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
+                    //clipToOutline = true
+                    setMultiTouchControls(true)
+                    // setMultiTouchControls(false)
+                    zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
+                    controller.setZoom(16.0)
+                    //controller.setCenter(GeoPoint(60.17, 25.95))
+                    controller.setCenter(checkCameraZoom(geoPoints))
+                    overlays.add(polyline)
+                }
+
+            }
+            //val i = Intent(context, DetailActivity::class.java)
+            //i.putExtra("item", (position + 1).toLong())
+            //context.startActivity(i)
+        }
+
+        holder.cardView.date.text = context.getString(R.string.dateCardView, item.date)
+        holder.cardView.distance.text =
+            context.getString(R.string.metersCardView, String.format("%.0f", item.distance))
+        holder.cardView.testText.text = item.geoPoints[1].latitude.toString()
+        holder.cardView.timeText.text = item.timeSpent
 
         holder.cardView.setOnClickListener {
-            val i = Intent(context, DetailActivity::class.java)
-            i.putExtra("item", (position + 1).toLong())
-            context.startActivity(i)
+            if (open) {
+                open = false
+                map.visibility = View.GONE
+            } else {
+                open = true
+                TransitionManager.beginDelayedTransition(holder.cardView.cardView)
+                map.visibility = View.VISIBLE
+
+            }
         }
     }
 
+    private fun checkCameraZoom(points: List<GeoPoint>): GeoPoint {
+        var furthestDistance = 0.0
+        val startingPoint = points[0]
+        var furthestPoint = points[0]
+        for (p in points) {
+            if (p.distanceToAsDouble(startingPoint) > furthestDistance) {
+                furthestDistance = p.distanceToAsDouble(startingPoint)
+                furthestPoint = p
+            }
+        }
+        return GeoPoint.fromCenterBetween(startingPoint, furthestPoint)
+    }
 }
 

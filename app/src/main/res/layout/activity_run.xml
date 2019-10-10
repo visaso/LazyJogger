@@ -20,7 +20,8 @@
         android:id="@+id/endRun"
         android:layout_width="42dp"
         android:layout_height="42dp"
-        android:src="@drawable/person"
+        android:layout_margin="12dp"
+        android:src="@drawable/ic_flag_black_36dp"
         android:background="@android:color/transparent"
         android:layout_gravity="end|top"/>
 

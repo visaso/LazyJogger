@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LazyJogger</string>
-    <string name="tab_text_1">Profile</string>
-    <string name="tab_text_2">Run!</string>
+    <string name="tab_text_1">Run!</string>
+    <string name="tab_text_2">History!</string>
     <string name="tab_text_3">History</string>
 
     <!-- TODO: Remove or change this placeholder text -->
@@ -36,4 +36,5 @@
     <string name="stepcounter">%1$s</string>
     <string name="metersCardView">%1$s meters!</string>
     <string name="dateCardView">%1$s</string>
+    <string name="timecardview">%1$s</string>
 </resources>

@@ -8,8 +8,7 @@ import com.example.lazyjogger.R
 
 private val TAB_TITLES = arrayOf(
     R.string.tab_text_1,
-    R.string.tab_text_2,
-    R.string.tab_text_3
+    R.string.tab_text_2
 )
 
 /**
@@ -17,16 +16,19 @@ private val TAB_TITLES = arrayOf(
  * one of the sections/tabs/pages.
  */
 class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
-    FragmentPagerAdapter(fm) {
+    FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     override fun getItem(position: Int): Fragment {
         // getItem is called to instantiate the fragment for the given page.
         // Return a PlaceholderFragment (defined as a static inner class below).
 //        return PlaceholderFragment.newInstance(position + 1)
         return when (position) {
-            0 -> ProfileFragment.newInstance(position + 1)
-            1 -> RunMenuFragment.newInstance(position + 1)
-            else -> HistoryFragment.newInstance(position + 1)
+//            0 -> ProfileFragment.newInstance(position + 1)
+//            1 -> RunMenuFragment.newInstance(position + 1)
+//            else -> HistoryFragment.newInstance(position + 1)
+            0 -> RunMenuFragment.newInstance(position + 1)
+            1 -> HistoryFragment.newInstance(position + 1)
+            else -> RunMenuFragment.newInstance(position + 1)
         }
     }
 
@@ -35,6 +37,6 @@ class SectionsPagerAdapter(private val context: Context, fm: FragmentManager) :
     }
 
     override fun getCount(): Int {
-        return 3
+        return 2
     }
 }

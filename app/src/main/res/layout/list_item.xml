@@ -6,6 +6,7 @@
 
     <TextView
         android:id="@+id/name"
+        android:textSize="22sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
@@ -14,6 +15,7 @@
 
     <TextView
         android:id="@+id/mac"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/BTMac"
@@ -21,6 +23,7 @@
 
     <TextView
         android:id="@+id/str"
+        android:textSize="18sp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:hint="@string/BTStrength"

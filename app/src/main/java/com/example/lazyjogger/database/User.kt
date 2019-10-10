@@ -13,7 +13,8 @@ data class User(
     val distance: Double,
     val date: String,
     val steps: Int,
-    val geoPoints: List<GeoPoint>
+    val geoPoints: List<GeoPoint>,
+    val timeSpent: String
 
 ) {
 

@@ -2,8 +2,6 @@ package com.example.lazyjogger.ui.main
 
 
 import android.content.Intent
-import android.graphics.Color
-import android.graphics.ColorSpace
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
@@ -13,34 +11,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.Toast
-import androidx.core.graphics.blue
-import androidx.core.graphics.green
-import androidx.core.graphics.red
 import androidx.fragment.app.Fragment
 import com.example.lazyjogger.R
 import com.example.lazyjogger.RunActivity
-import com.example.lazyjogger.database.User
-import com.example.lazyjogger.database.UserDB
 import com.google.android.gms.location.*
-import org.jetbrains.anko.doAsync
-import org.jetbrains.anko.gray
-import org.jetbrains.anko.uiThread
-import org.osmdroid.bonuspack.routing.OSRMRoadManager
-import org.osmdroid.bonuspack.routing.Road
-import org.osmdroid.bonuspack.routing.RoadManager
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.MapView
-import org.osmdroid.views.overlay.OverlayItem
-import org.osmdroid.views.overlay.Polyline
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
-import kotlin.math.abs
-import kotlin.math.roundToInt
-import kotlin.random.Random
 
 /**
  * A simple [Fragment] subclass.
@@ -48,7 +29,7 @@ import kotlin.random.Random
 class RunMenuFragment : Fragment(), LocationListener {
 
     private lateinit var map: MapView
-    private lateinit var polyline: Polyline
+    //private lateinit var polyline: Polyline
 
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
@@ -65,8 +46,10 @@ class RunMenuFragment : Fragment(), LocationListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val context = context
-        Configuration.getInstance().load(context,
-            PreferenceManager.getDefaultSharedPreferences(context))
+        Configuration.getInstance().load(
+            context,
+            PreferenceManager.getDefaultSharedPreferences(context)
+        )
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(context!!)
         fusedLocationClient.lastLocation.addOnCompleteListener { task ->
             if (task.isSuccessful && task.result != null && !this::previousLocation.isInitialized) {
@@ -82,7 +65,7 @@ class RunMenuFragment : Fragment(), LocationListener {
         locationCallback = object : LocationCallback() {
             override fun onLocationResult(locationResult: LocationResult?) {
                 locationResult ?: return
-                for (location in locationResult.locations){
+                for (location in locationResult.locations) {
                     val loc = GeoPoint(location.latitude, location.longitude)
                     //Toast.makeText(context, "${location.latitude}", Toast.LENGTH_SHORT).show()
                     map.controller.setCenter(GeoPoint(location.latitude, location.longitude))
@@ -94,9 +77,11 @@ class RunMenuFragment : Fragment(), LocationListener {
     }
 
     private fun startLocationUpdates() {
-        fusedLocationClient.requestLocationUpdates(locationRequest,
+        fusedLocationClient.requestLocationUpdates(
+            locationRequest,
             locationCallback,
-            Looper.getMainLooper())
+            Looper.getMainLooper()
+        )
     }
 
     private fun stopLocationUpdates() {
@@ -112,7 +97,7 @@ class RunMenuFragment : Fragment(), LocationListener {
         map = v.findViewById(R.id.map)
         setupMap(map)
 
-        val db = UserDB.get(v.context)
+        //val db = UserDB.get(v.context)
         val startRun = v.findViewById<Button>(R.id.startRun)
 //        startRun.setOnClickListener {
 //            doAsync {
