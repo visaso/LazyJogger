@@ -28,7 +28,9 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".DetailActivity"></activity>
-        <activity android:name=".RunActivity" />
+        <activity
+            android:name=".RunActivity"
+            android:noHistory="true" />
         <activity android:name=".SensorActivity" />
         <activity
             android:name=".SplashActivity"
