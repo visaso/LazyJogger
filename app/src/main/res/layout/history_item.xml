@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/cardParent"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -15,7 +16,7 @@
         android:layout_marginRight="16dp"
         android:animateLayoutChanges="true"
         android:elevation="8dp"
-        android:minHeight="170dp"
+        android:minHeight="150dp"
         app:cardCornerRadius="8dp">
 
         <TextView
@@ -36,13 +37,13 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="170dp"
+                android:layout_height="150dp"
                 android:orientation="horizontal">
 
                 <ImageView
                     android:id="@+id/historyImage"
                     android:layout_width="100dp"
-                    android:layout_height="170dp"
+                    android:layout_height="150dp"
                     android:layout_gravity="top"
                     android:contentDescription="@string/history_image"
                     android:padding="10dp"
@@ -52,7 +53,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginTop="50dp"
+                    android:layout_marginTop="40dp"
                     android:orientation="vertical">
 
                     <TextView
@@ -62,18 +63,26 @@
                         android:text="@string/timecardview"
                         android:textSize="18sp" />
 
-                    <TextView
-                        android:id="@+id/testText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text=""
-                        android:textSize="18sp" />
+
 
                     <TextView
                         android:id="@+id/distance"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="@string/metersCardView"
+                        android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/minHeartrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="79 bpm"
+                        android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/maxHeartrate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="180 bpm"
+                        tools:text="180 bpm"
                         android:textSize="18sp" />
                 </LinearLayout>
 
@@ -89,8 +98,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="250dp"
                     android:layout_gravity="bottom"
-                    android:layout_margin="25dp"
-                    android:paddingHorizontal="25dp"
+                    android:layout_margin="15dp"
+                    android:paddingHorizontal="15dp"
                     android:visibility="gone" />
 
             </LinearLayout>

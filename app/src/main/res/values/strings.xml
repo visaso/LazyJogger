@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">LazyJogger</string>
     <string name="tab_text_1">Run!</string>
-    <string name="tab_text_2">History!</string>
+    <string name="tab_text_2">History</string>
     <string name="tab_text_3">History</string>
 
     <!-- TODO: Remove or change this placeholder text -->

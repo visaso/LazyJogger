@@ -2,21 +2,16 @@ package com.example.lazyjogger.ui.main
 
 
 import android.content.Context
-import android.content.Intent
 import android.transition.TransitionManager
-import android.transition.Visibility
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.example.lazyjogger.DetailActivity
 import com.example.lazyjogger.R
 import com.example.lazyjogger.database.User
 import com.example.lazyjogger.database.UserDB
-import kotlinx.android.synthetic.main.activity_detail.*
 import kotlinx.android.synthetic.main.history_item.view.*
-import kotlinx.android.synthetic.main.history_item.view.map
 import org.jetbrains.anko.doAsync
 import org.jetbrains.anko.uiThread
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -76,7 +71,7 @@ class HistoryListAdapter(private val context: Context, private val runList: List
         holder.cardView.date.text = context.getString(R.string.dateCardView, item.date)
         holder.cardView.distance.text =
             context.getString(R.string.metersCardView, String.format("%.0f", item.distance))
-        holder.cardView.testText.text = item.geoPoints[1].latitude.toString()
+        //holder.cardView.testText.text = item.geoPoints[1].latitude.toString()
         holder.cardView.timeText.text = item.timeSpent
 
         holder.cardView.setOnClickListener {
