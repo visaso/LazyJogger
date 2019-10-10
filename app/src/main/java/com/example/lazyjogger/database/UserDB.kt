@@ -31,6 +31,10 @@ abstract class UserDB: RoomDatabase() {
     }
 }
 
+/**
+ * TypeConverters to store Lists inside the database
+ */
+
 class TypeConverter {
     @androidx.room.TypeConverter
     fun fromGeoPointList(geoPoints: List<GeoPoint>): String {

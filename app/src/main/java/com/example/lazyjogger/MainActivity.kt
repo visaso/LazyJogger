@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
         val sectionsPagerAdapter = SectionsPagerAdapter(this, supportFragmentManager)
         val viewPager: ViewPager = findViewById(R.id.view_pager)
         viewPager.adapter = sectionsPagerAdapter
@@ -46,17 +47,15 @@ class MainActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-
         if (!checkPermissions(this, permissions)) {
             ActivityCompat.requestPermissions(this, permissions, 5)
         }
-
 
     }
 
     inner class HeartbeatRunnable : Runnable {
         override fun run() {
-            for (i in 1..500) {
+            for (i in 1..1500) {
                 heartbeatAnim?.start()
                 sleep(heartRate.toLong())
             }

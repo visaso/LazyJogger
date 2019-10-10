@@ -22,6 +22,11 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.CustomZoomButtonsController
 import org.osmdroid.views.overlay.Polyline
 
+/**
+ * Adapter that fetches items from the database and shows them on the UI
+ * Also handles the calculation of values from database to a more readable format.
+ */
+
 class HistoryListAdapter(private val context: Context, private val runList: List<User>) :
     RecyclerView.Adapter<HistoryListAdapter.ViewHolder>() {
 
@@ -63,7 +68,6 @@ class HistoryListAdapter(private val context: Context, private val runList: List
                     controller.setZoom(16.0)
                     controller.setCenter(checkCameraZoom(geoPoints))
                 }
-
             }
             val cc = ColorCalculator()
             for (i in geoPoints.indices) {
@@ -86,14 +90,8 @@ class HistoryListAdapter(private val context: Context, private val runList: List
             context.getString(R.string.metersCardView, String.format("%.0f", item.distance))
         holder.cardView.timeText.text = context.getString(R.string.timecardview, item.timeSpent)
 
-        var hrSum = 0
-        for (i in item.hrList) {
-            hrSum += i
-        }
-        val avg = hrSum / item.hrList.size
-
-        holder.cardView.avgHeartrate.text = context.getString(R.string.average_bpm, avg.toString())
-
+        holder.cardView.avgHeartrate.text =
+            context.getString(R.string.average_bpm, calcAverage(item.hrList).toString())
         holder.cardView.setOnClickListener {
             if (open) {
                 open = false
@@ -102,7 +100,6 @@ class HistoryListAdapter(private val context: Context, private val runList: List
                 open = true
                 TransitionManager.beginDelayedTransition(holder.cardView.cardView)
                 map.visibility = View.VISIBLE
-
             }
         }
     }
@@ -118,6 +115,14 @@ class HistoryListAdapter(private val context: Context, private val runList: List
             }
         }
         return GeoPoint.fromCenterBetween(startingPoint, furthestPoint)
+    }
+
+    private fun calcAverage(list: List<Int>): Int {
+        var hrSum = 0
+        for (i in list) {
+            hrSum += i
+        }
+        return hrSum / list.size
     }
 }
 

@@ -24,12 +24,11 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 
 /**
- * A simple [Fragment] subclass.
+ * Show current location and preview in menu
  */
 class RunMenuFragment : Fragment(), LocationListener {
 
     private lateinit var map: MapView
-    //private lateinit var polyline: Polyline
 
     private lateinit var locationCallback: LocationCallback
     private lateinit var locationRequest: LocationRequest
@@ -67,7 +66,6 @@ class RunMenuFragment : Fragment(), LocationListener {
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     val loc = GeoPoint(location.latitude, location.longitude)
-                    //Toast.makeText(context, "${location.latitude}", Toast.LENGTH_SHORT).show()
                     map.controller.setCenter(GeoPoint(location.latitude, location.longitude))
                     previousLocation = loc
                 }
@@ -92,22 +90,11 @@ class RunMenuFragment : Fragment(), LocationListener {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
         val v = inflater.inflate(R.layout.fragment_run_menu, container, false)
         map = v.findViewById(R.id.map)
         setupMap(map)
 
-        //val db = UserDB.get(v.context)
         val startRun = v.findViewById<Button>(R.id.startRun)
-//        startRun.setOnClickListener {
-//            doAsync {
-//                val id = db.userDao().insert(User(0, "Testi", "Juttu"))
-//
-//                uiThread {
-//                    Toast.makeText(context, "$id added", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-//        }
 
         startRun.setOnClickListener {
             val intent = Intent(context, RunActivity::class.java)
@@ -125,11 +112,9 @@ class RunMenuFragment : Fragment(), LocationListener {
         map.apply {
             setTileSource(TileSourceFactory.MAPNIK)
             clipToOutline = true
-            //setMultiTouchControls(true)
             setMultiTouchControls(false)
             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             controller.setZoom(18.0)
-            //controller.setCenter(GeoPoint(60.17, 25.95))
             overlays.add(mLocationOverlay)
         }
     }

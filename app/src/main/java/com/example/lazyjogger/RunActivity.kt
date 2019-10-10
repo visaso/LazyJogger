@@ -52,7 +52,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         currentHeartBeat = heartRate
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {}
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor == sStepCounter) {
@@ -113,6 +113,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
             PreferenceManager.getDefaultSharedPreferences(this)
         )
         setupSensors()
+
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient.lastLocation.addOnCompleteListener { task ->
             if (task.isSuccessful && task.result != null && !this::previousLocation.isInitialized) {
@@ -182,8 +183,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
             timer.format = "00:%s"
         }
 
-        Log.d("Time passed", timer.text.toString())
-
         mapRunning = findViewById(R.id.mapRunning)
         setupMap(mapRunning)
     }
@@ -222,7 +221,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         startLocationUpdates()
     }
 
-
     private fun setupMap(map: MapView) {
 
         val mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(this), map).apply {
@@ -248,17 +246,12 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     private fun addPoint(geoPoint: GeoPoint, speed: Float) {
         val newLine = Polyline()
         val cc = ColorCalculator()
-        Log.d(
-            "Color",
-            cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat())
-        )
         newLine.color =
             Color.parseColor(cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat()))
+
         val distanceDelta = previousLocation.distanceToAsDouble(geoPoint)
         distanceTraveled += distanceDelta
-
         val formatVelocity = String.format("%.1f", speed * 3.6)
-
         val distanceToKm = distanceTraveled / 1000
         val formatDistance = String.format("%.2f", distanceToKm)
 
@@ -272,6 +265,16 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         mapRunning.overlays.add(newLine)
         mapRunning.invalidate()
     }
+
+
+    /******** Hack below
+     ********************
+     *********************
+     **********************
+     ***********************
+     ************************
+     *************************
+     *************************/
 
     override fun onClick(bleDevice: BLEDevice) {
         val gattClientCallback = GattHRClientCallback(this)

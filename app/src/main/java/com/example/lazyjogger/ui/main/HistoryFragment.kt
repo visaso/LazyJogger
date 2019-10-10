@@ -15,7 +15,7 @@ import com.example.lazyjogger.database.UserModel
 
 
 /**
- * A simple [Fragment] subclass.
+ * A fragment containing a RecyclerView to show earlier records as LiveData
  */
 class HistoryFragment : Fragment() {
 

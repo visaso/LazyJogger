@@ -5,6 +5,11 @@ import androidx.core.graphics.blue
 import androidx.core.graphics.green
 import androidx.core.graphics.red
 
+/**
+ * Class that handles calculating a color in between two given colors, depending on the strength
+ * -value
+ */
+
 class ColorCalculator {
 
      fun calculateColor(strength: Float): String {

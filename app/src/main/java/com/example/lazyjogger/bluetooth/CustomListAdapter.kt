@@ -12,6 +12,10 @@ import kotlinx.android.synthetic.main.list_item.view.*
 
 data class BLEDevice(val name: String?, val mac: String, var strength: Int, var isConnectable: Boolean, val bluetoothDevice: BluetoothDevice)
 
+/**
+ * Adapter to show found BLE-devices on the UI
+ */
+
 class CustomListAdapter(private val items : ArrayList<BLEDevice>, val context: Context, private val itemListener: ItemListener) : RecyclerView.Adapter<CustomListAdapter.ViewHolder>() {
 
     interface ItemListener {

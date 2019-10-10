@@ -15,6 +15,10 @@ import com.example.lazyjogger.bluetooth.CustomListAdapter
 import com.example.lazyjogger.bluetooth.GattHRClientCallback
 import kotlinx.android.synthetic.main.activity_sensor.*
 
+/**
+ * Legacy, original plan was to use this to select a HR-sensor, and broadcast it to activites
+ */
+
 class SensorActivity : AppCompatActivity(), CustomListAdapter.ItemListener, GattHRClientCallback.HRCallback {
     override fun sendData(heartRate: Int) {
         runOnUiThread {
