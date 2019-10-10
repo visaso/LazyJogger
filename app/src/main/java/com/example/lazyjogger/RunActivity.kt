@@ -44,16 +44,15 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallback.HRCallback, CustomListAdapter.ItemListener {
+class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallback.HRCallback,
+    CustomListAdapter.ItemListener {
 
     override fun sendData(heartRate: Int) {
         Log.d("Heartrate", currentHeartBeat.toString())
         currentHeartBeat = heartRate
     }
 
-    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) {
-        //Log.d("Stepsensor accuracy", accuracy.toString())
-    }
+    override fun onAccuracyChanged(sensor: Sensor?, accuracy: Int) { }
 
     override fun onSensorChanged(event: SensorEvent?) {
         if (event?.sensor == sStepCounter) {
@@ -90,7 +89,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     private var currentHeartBeat: Int = 60
     private var greenHeartBeat: Int = 60
     private var redHeartBeat: Int = 180
-
     private var heartBeatList: MutableList<Int> = mutableListOf()
 
 
@@ -131,11 +129,11 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         val endRun = findViewById<ImageButton>(R.id.endRun)
         endRun.setOnClickListener {
             doAsync {
-                val dateFormatter = SimpleDateFormat("dd.MM.yyyy, kk:mm", Locale.getDefault())
+                val dateFormatter = SimpleDateFormat("dd.MM.yyyy, HH:mm", Locale.getDefault())
                 val date = dateFormatter.format(date)
                 val geoPointList = geoPointList.toList()
                 val hrList = heartBeatList.toList()
-                val id = db.userDao().insert(
+                db.userDao().insert(
                     User(
                         0,
                         "Testi",
@@ -157,8 +155,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
             startActivity(i)
         }
 
-
-
         locationRequest = LocationRequest().apply {
             interval = 1500
             smallestDisplacement = 0f
@@ -168,10 +164,7 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
                 locationResult ?: return
                 for (location in locationResult.locations) {
                     val loc = GeoPoint(location.latitude, location.longitude)
-                    //val time = System.currentTimeMillis()
                     val speed = location.speed
-                    //Toast.makeText(applicationContext, "${location.latitude}", Toast.LENGTH_SHORT)
-                    //    .show()
                     addPoint(loc, speed)
                     previousLocation = loc
                     previousTime = System.currentTimeMillis()
@@ -181,11 +174,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
             }
         }
         startLocationUpdates()
-
-        //currentTime.text = getString(R.string.time, "00:12:30")
-        distanceText.text = getString(R.string.distance, "13.3 km")
-        speedText.text = getString(R.string.speedText, "6.2")
-        //heartbeatText.text = getString(R.string.heartbeattext, "120 bpm")
         stepCounterText.text = stepCounter.toString()
 
         timer.start()
@@ -210,7 +198,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
             sm.registerListener(this, it, SensorManager.SENSOR_DELAY_UI)
         }
     }
-
 
     private fun startLocationUpdates() {
         fusedLocationClient.requestLocationUpdates(
@@ -248,26 +235,25 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         polyline = Polyline(map)
         map.apply {
             setTileSource(TileSourceFactory.DEFAULT_TILE_SOURCE)
-            //clipToOutline = true
             setMultiTouchControls(true)
-            // setMultiTouchControls(false)
             zoomController.setVisibility(CustomZoomButtonsController.Visibility.NEVER)
             controller.setZoom(18.0)
-            //controller.setCenter(GeoPoint(60.17, 25.95))
             overlays.add(mLocationOverlay)
             overlays.add(polyline)
             overlays.add(mCompassOverlay)
             mapOrientation = startingOrientation
         }
-
     }
 
     private fun addPoint(geoPoint: GeoPoint, speed: Float) {
         val newLine = Polyline()
         val cc = ColorCalculator()
-        //newLine.color = Color.parseColor(calculateColor(0.8.toFloat()))
-        Log.d("Color", cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat()))
-        newLine.color = Color.parseColor(cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat()))
+        Log.d(
+            "Color",
+            cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat())
+        )
+        newLine.color =
+            Color.parseColor(cc.calculateColor((currentHeartBeat - greenHeartBeat) / (redHeartBeat - greenHeartBeat).toFloat()))
         val distanceDelta = previousLocation.distanceToAsDouble(geoPoint)
         distanceTraveled += distanceDelta
 
@@ -280,9 +266,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         speedText.text = getString(R.string.speedText, formatVelocity)
         heartbeatText.text = getString(R.string.heartbeattext, currentHeartBeat.toString())
 
-        //Log.d("Map", mapRunning.mapOrientation.toString())
-
-        //Log.d("Compass", mCompassOverlay.orientation.toString())
         newLine.addPoint(previousLocation)
         newLine.addPoint(geoPoint)
         mapRunning.controller.setCenter(geoPoint)
@@ -290,12 +273,12 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
         mapRunning.invalidate()
     }
 
-
-
     override fun onClick(bleDevice: BLEDevice) {
         val gattClientCallback = GattHRClientCallback(this)
-        bleDevice.bluetoothDevice.connectGatt(this, false,
-            gattClientCallback)
+        bleDevice.bluetoothDevice.connectGatt(
+            this, false,
+            gattClientCallback
+        )
         deviceList.clear()
         adapter.notifyDataSetChanged()
     }
@@ -303,9 +286,6 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
     private lateinit var mBluetoothAdapter: BluetoothAdapter
     private val deviceList = ArrayList<BLEDevice>()
     private lateinit var adapter: CustomListAdapter
-
-
-
 
     private var mScanResults: HashMap<String, ScanResult>? = null
     private var mScanning = false
@@ -363,7 +343,13 @@ class RunActivity : AppCompatActivity(), SensorEventListener, GattHRClientCallba
                     curDevice.strength = result.rssi
                     curDevice.isConnectable = result.isConnectable
                 } else {
-                    val bleDevice = BLEDevice(device.name, device.address, result.rssi, result.isConnectable, result.device)
+                    val bleDevice = BLEDevice(
+                        device.name,
+                        device.address,
+                        result.rssi,
+                        result.isConnectable,
+                        result.device
+                    )
                     deviceList.add(bleDevice)
                     Log.d("DBG", "Device address: $deviceAddress (${result.isConnectable})")
                 }

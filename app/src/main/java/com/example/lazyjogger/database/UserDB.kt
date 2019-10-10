@@ -11,11 +11,10 @@ import com.google.gson.reflect.TypeToken
 
 
 
-@Database(entities = [(User::class) /*,(ContactInfo::class)*/] , version = 1, exportSchema = false)
+@Database(entities = [(User::class)] , version = 1, exportSchema = false)
 @TypeConverters(TypeConverter::class)
 abstract class UserDB: RoomDatabase() {
     abstract fun userDao(): UserDao
-    //abstract fun contactListDao(): ContactInfoDao
 
     companion object {
     private var sInstance: UserDB? = null

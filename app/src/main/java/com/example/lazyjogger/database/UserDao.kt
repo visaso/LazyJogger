@@ -18,14 +18,3 @@ interface UserDao {
     @Query("DELETE FROM user WHERE uid = :userId")
     fun deleteByUserId(userId: Long): Int
 }
-/*
-@Dao
-interface ContactInfoDao {
-
-    @Query("SELECT * FROM ContactInfo")
-    fun getAll(): LiveData<List<ContactInfo>>
-
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(user: ContactInfo): Long
-}
-*/

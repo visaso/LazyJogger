@@ -18,8 +18,7 @@ import kotlinx.android.synthetic.main.activity_sensor.*
 class SensorActivity : AppCompatActivity(), CustomListAdapter.ItemListener, GattHRClientCallback.HRCallback {
     override fun sendData(heartRate: Int) {
         runOnUiThread {
-            //heartbeat.text = heartRate.toString()
-            //val dataPoint = DataPoint(Calendar.getInstance().time, heartRate.toDouble())
+
         }
     }
 

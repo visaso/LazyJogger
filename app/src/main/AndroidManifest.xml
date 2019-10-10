@@ -27,7 +27,6 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".DetailActivity"></activity>
         <activity
             android:name=".RunActivity"
             android:noHistory="true" />
