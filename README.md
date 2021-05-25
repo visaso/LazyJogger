@@ -3,6 +3,8 @@ Runlogger that generates a heatmap using a heartbeat-sensor
 
 If functionalities seem to be missing, check that required permissions are given in case I forgot a permission request.
 
+![Screenshot_20210525-152915](https://user-images.githubusercontent.com/32449867/119498679-8cba3d80-bd6e-11eb-85cb-1b9e8e5e9743.jpg)
+
 <img src="https://user-images.githubusercontent.com/32449867/66611849-6f9c1f80-ebc8-11e9-903b-5dafeb6cb8eb.jpg" height="600" alt="Screenshot_20191011-014035" style="height:250;">
 
 # Heartbeat sensor
